@@ -26,6 +26,7 @@ AVAILABLE_MODELS = {
     "llava": "Llava",
     "llava_hf": "LlavaHf",
     "llava_onevision": "Llava_OneVision",
+    "llava_sae_hooked": "LlavaSaeHooked",
     "llava_sglang": "LlavaSglang",
     "llava_vid": "LlavaVid",
     "longva": "LongVA",
