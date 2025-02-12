@@ -17,26 +17,25 @@ from lmms_eval.tasks._task_utils.file_utils import generate_submission_file
 
 
 
-CATEGORIES = [
-    'Element Attributes', 
-    'Element Attributes (Optimal Illusion)', 
-    'Element Localizations', 
-    'Element Counting', 
-    'Positional Relationship', 
-    'Event Attributes', 
-    'Event localization', 
-    'Element Counting', 
-    'Event Duration', 
-    'Character Emotion', 
-    'Displacement', 
-    'Plot Attributes', 
-    'Plot Attributes (Montage)', 
-    'Object Causality', 
-    'Object Causality (Editing)', 
-    'Professional Knowledge', 
-    'Character Reaction', 
-    'Character Motivation'
-]
+CATEGORIES = ['Objective Causality', 
+              'Objective Causality (Videography Phenomenon & Illusion)', 
+              'Element Attributes (Optical Illusion)', 
+              'Displacement Attribute', 
+              'Plot Attribute (Montage)', 
+              'Plot Attribute', 
+              'Element Attributes', 
+              'Element Counting', 
+              'Professional Knowledge', 
+              'Character Motivation Causality', 
+              'Element Localization', 
+              'Character Reaction Causality', 
+              'Event Counting', 
+              'Local Event Attribute', 
+              'Event Localization', 
+              'Positional Relationship', 
+              'Event Duration & Speed Attribute', 
+              'Character Emotion Attribute'
+              ]
 
 
 # with open(Path(__file__).parent / "_default_template_yaml", "r") as f:
@@ -73,8 +72,9 @@ def convert_time_to_frame(time_in_seconds, fps):
 
 def hardvideo_doc_to_visual(doc):
     cache_dir = os.path.join(base_cache_dir, cache_name)
-    video_path = doc["videoID"] + ".mp4"
-    video_path = os.path.join(cache_dir, "data", video_path)
+    # import pdb;pdb.set_trace()
+    video_path = doc["video_id"] + ".mp4"
+    video_path = os.path.join(cache_dir, "Benchmark-AllVideos-LQ", video_path)
     if os.path.exists(video_path):
         video_path = video_path
     elif os.path.exists(video_path.replace("mp4", "MP4")):
@@ -88,7 +88,7 @@ def hardvideo_doc_to_visual(doc):
 
 def hardvideo_doc_to_text(doc, lmms_eval_specific_kwargs=None):
     option_prompt = "Select the best answer to the following multiple-choice question based on the video. Respond with only the letter (A, B, C, or D) of the correct option."
-    question = doc["question"] + "\n" + doc["question_prompt"]
+    question = doc["question"] + doc["question_prompt"]
     post_prompt = lmms_eval_specific_kwargs["post_prompt"] if "post_prompt" in lmms_eval_specific_kwargs else "The best answer is:"
     full_prompt = option_prompt + "\n" + question + "\n" + post_prompt
     return full_prompt
@@ -151,8 +151,8 @@ def hardvideo_process_results(doc, results):
     pred_ans = extract_characters_regex(pred)
     # gt_ans = doc["answer"].lower().strip().replace(".", "")
 
-    category = doc["capability"]
-    data_dict = {"question_id": doc["question_id"], "duration": doc["duration"], "category": category, "pred_answer": pred_ans, "answer": doc["answer"]}
+    capability = doc["capability"]
+    data_dict = {"video_id": doc["video_id"], "capability": capability, "pred_answer": pred_ans, "answer": doc["answer"]}
 
     # return {f"hardvideo_perception_score": data_dict for metric in matrices}
     return {f"hardvideo_perception_score": data_dict}
@@ -167,11 +167,14 @@ def hardvideo_aggregate_results(results):
     """
     category2score = {}
 
+    for category in CATEGORIES:
+        category2score[category] = {"correct": 0, "answered": 0}
+
 
     for result in results:
-        category = result["category"]
-        category2score[category]["answered"] += 1
-        category2score[category]["correct"] += result["pred_answer"] == result["answer"]
+        capability = result["capability"]
+        category2score[capability]["answered"] += 1
+        category2score[capability]["correct"] += result["pred_answer"] == result["answer"]
 
     for category in CATEGORIES:
         total_correct = 0
@@ -180,7 +183,7 @@ def hardvideo_aggregate_results(results):
             if category in k:
                 total_correct += v["correct"]
                 total_answered += v["answered"]
-        eval_logger.info(f"Evaluation on Categories: {category}: {100 * total_correct / total_answered if total_answered > 0 else 0 : .1f}%")
+        eval_logger.info(f"Evaluation on capability: {category}: {100 * total_correct / total_answered if total_answered > 0 else 0 : .1f}%")
 
     total_correct = 0
     total_answered = 0

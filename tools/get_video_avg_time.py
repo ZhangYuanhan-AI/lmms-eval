@@ -6,8 +6,11 @@ from tqdm import tqdm
 
 from lmms_eval.tasks import get_task_dict, include_path, initialize_tasks
 
-tasks = ["worldqa_gen", "activitynetqa", "nextqa_oe_val", "nextqa_oe_test", "videochatgpt_gen", "egoschema"]
+# tasks = ["worldqa_gen", "activitynetqa", "nextqa_oe_val", "nextqa_oe_test", "videochatgpt_gen", "egoschema"]
 # tasks = ["nextqa_oe_val"]
+tasks = [
+    "hardvideo"
+]
 data_stats = {}
 
 
