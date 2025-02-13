@@ -88,7 +88,7 @@ def hardvideo_doc_to_visual(doc):
 
 def hardvideo_doc_to_text(doc, lmms_eval_specific_kwargs=None):
     option_prompt = "Select the best answer to the following multiple-choice question based on the video. Respond with only the letter (A, B, C, or D) of the correct option."
-    question = doc["question"] + doc["question_prompt"]
+    question = doc["question"] +'\n'+ doc["question_prompt"]
     post_prompt = lmms_eval_specific_kwargs["post_prompt"] if "post_prompt" in lmms_eval_specific_kwargs else "The best answer is:"
     full_prompt = option_prompt + "\n" + question + "\n" + post_prompt
     return full_prompt
