@@ -52,7 +52,7 @@ hf_home = os.getenv("HF_HOME", "~/.cache/huggingface/")
 # cache_dir = os.path.join(hf_home, cache_dir)
 # base_cache_dir = config["dataset_kwargs"]["cache_dir"]
 base_cache_dir = os.path.expanduser(hf_home)
-with open(Path(__file__).parent / "hardvideo.yaml", "r") as f:
+with open(Path(__file__).parent / "_default_template.yaml", "r") as f:
     raw_data = f.readlines()
     safe_data = []
     for i, line in enumerate(raw_data):
@@ -87,10 +87,10 @@ def hardvideo_doc_to_visual(doc):
 
 
 def hardvideo_doc_to_text(doc, lmms_eval_specific_kwargs=None):
-    option_prompt = "Select the best answer to the following multiple-choice question based on the video. Respond with only the letter (A, B, C, or D) of the correct option."
     question = doc["question"] +'\n'+ doc["question_prompt"]
     post_prompt = lmms_eval_specific_kwargs["post_prompt"] if "post_prompt" in lmms_eval_specific_kwargs else "The best answer is:"
-    full_prompt = option_prompt + "\n" + question + "\n" + post_prompt
+    pre_promt = lmms_eval_specific_kwargs["pre_prompt"] if "pre_prompt" in lmms_eval_specific_kwargs else "Select the best answer to the following multiple-choice question based on the video. Respond with only the letter (A, B, C, or D) of the correct option."
+    full_prompt = pre_promt + "\n" + question + "\n" + post_prompt
     return full_prompt
 
 
@@ -121,10 +121,10 @@ def extract_characters_regex(s):
     for answer_prefix in answer_prefixes:
         s = s.replace(answer_prefix, "")
 
-    if len(s.split()) > 10 and not re.search("[ABCD]", s):
+    if len(s.split()) > 10 and not re.search("[ABCDE]", s):
         return ""
 
-    matches = re.search(r"[ABCD]", s)
+    matches = re.search(r"[ABCDE]", s)
     if matches is None:
         return ""
     return matches[0]
@@ -153,6 +153,23 @@ def hardvideo_process_results(doc, results):
 
     capability = doc["capability"]
     data_dict = {"video_id": doc["video_id"], "capability": capability, "pred_answer": pred_ans, "answer": doc["answer"]}
+
+    # return {f"hardvideo_perception_score": data_dict for metric in matrices}
+    return {f"hardvideo_perception_score": data_dict}
+
+def hardvideo_process_results_oe(doc, results):
+    """
+    Args:
+        doc: a instance of the eval dataset
+        results: [pred]
+    Returns:
+        a dictionary with key: metric name (in this case hardvideo score), value: metric value
+    """
+    pred = results[0]
+    # gt_ans = doc["answer"].lower().strip().replace(".", "")
+
+    capability = doc["capability"]
+    data_dict = {"video_id": doc["video_id"], "capability": capability, "pred_answer": pred, "answer": doc["answer"]}
 
     # return {f"hardvideo_perception_score": data_dict for metric in matrices}
     return {f"hardvideo_perception_score": data_dict}

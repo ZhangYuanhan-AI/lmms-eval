@@ -521,6 +521,8 @@ class LlavaVid(lmms):
             eval_logger.debug(f"Question: {cur_prompt}")
             eval_logger.debug(f"Answer: {outputs}")
             # import pdb;pdb.set_trace()
+            print(cur_prompt)
+            print(outputs)
             res.append(outputs)
             pbar.update(1)
         return res

@@ -1,9 +1,5 @@
-dataset_path: lmms-lab/haha
-dataset_kwargs:
-  token: True
-  cache_dir: hardvideo
-  video: True
-  # From_YouTube: True
+include: _default_template.yaml
+
 task: hardvideo_no_leading_oe
 test_split: test_no_leading_oe
 output_type: generate_until
@@ -11,13 +7,13 @@ doc_to_visual: !function utils.hardvideo_doc_to_visual
 doc_to_text: !function utils.hardvideo_doc_to_text
 doc_to_target: "answer"
 generation_kwargs:
-  max_new_tokens: 16
+  max_new_tokens: 50
   temperature: 0
   top_p: 1.0
   num_beams: 1
   do_sample: false
 # The return value of process_results will be used by metrics
-process_results: !function utils.hardvideo_process_results
+process_results: !function utils.hardvideo_process_results_oe
 # Note that the metric name can be either a registed metric function (such as the case for GQA) or a key name returned by process_results
 metric_list:
   - metric: hardvideo_perception_score

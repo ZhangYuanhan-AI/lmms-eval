@@ -1,0 +1,5 @@
+dataset_path: lmms-lab/haha
+dataset_kwargs:
+  token: True
+  cache_dir: hardvideo
+  video: True
