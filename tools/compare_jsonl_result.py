@@ -2,7 +2,7 @@ import json
 import logging
 
 # Set up logging
-log_file = "compare_0214.log"
+log_file = "compare_0215.log"
 logging.basicConfig(
     filename=log_file,
     level=logging.INFO,
@@ -15,14 +15,18 @@ jsonl_a_path = "/opt/tiger/lmms-eval/logs/gpt-4o-2024-05-13/20250213_081234_samp
 # jsonl_c_path = "/opt/tiger/lmms-eval/logs/Qwen__Qwen2.5-VL-7B-Instruct/20250213_121142_samples_hardvideo_single_mc.jsonl"
 # jsonl_d_path = "/opt/tiger/lmms-eval/logs/checkpoints__LLaVA-Video-72B-Qwen2_2/20250213_123707_samples_hardvideo_single_mc.jsonl"
 
-jsonl_b_path = "/opt/tiger/lmms-eval/logs/LLaVA-NeXT-Video-7B-Qwen2__/20250214_115439_samples_hardvideo_single_mc.jsonl"
-jsonl_c_path =  "/opt/tiger/lmms-eval/logs/Qwen__Qwen2.5-VL-7B-Instruct/20250214_130258_samples_hardvideo_single_mc.jsonl"
-jsonl_d_path = "/opt/tiger/lmms-eval/logs/checkpoints__LLaVA-Video-72B-Qwen2/20250214_120151_samples_hardvideo_single_mc.jsonl"
+# jsonl_b_path = "/opt/tiger/lmms-eval/logs/LLaVA-NeXT-Video-7B-Qwen2__/20250214_115439_samples_hardvideo_single_mc.jsonl"
+# jsonl_c_path =  "/opt/tiger/lmms-eval/logs/Qwen__Qwen2.5-VL-7B-Instruct/20250214_130258_samples_hardvideo_single_mc.jsonl"
+# jsonl_d_path = "/opt/tiger/lmms-eval/logs/checkpoints__LLaVA-Video-72B-Qwen2/20250214_120151_samples_hardvideo_single_mc.jsonl"
 
 
 jsonl_b_path = "/opt/tiger/lmms-eval/logs/OpenGVLab__InternVL2_5-8B/20250214_195825_samples_hardvideo_single_mc.jsonl"
 jsonl_c_path =  "/opt/tiger/lmms-eval/logs/OpenGVLab__InternVL2_5-38B/20250214_213135_samples_hardvideo_single_mc.jsonl"
 jsonl_d_path = "/opt/tiger/lmms-eval/logs/checkpoints__LLaVA-Video-72B-Qwen2/20250214_153206_samples_hardvideo_single_mc.jsonl"
+
+model_b_name = jsonl_b_path.split("/")[-2]
+model_c_name = jsonl_c_path.split("/")[-2]
+model_d_name = jsonl_d_path.split("/")[-2]
 
 jsonl_b_oe_path =  "/opt/tiger/lmms-eval/logs/LLaVA-NeXT-Video-7B-Qwen2__/20250213_135831_samples_hardvideo_no_leading_oe.jsonl"
 jsonl_c_oe_path =  "/opt/tiger/lmms-eval/logs/Qwen__Qwen2.5-VL-7B-Instruct/20250213_143102_samples_hardvideo_no_leading_oe.jsonl"
@@ -72,7 +76,7 @@ for qid in jsonl_a:
 
     # question_oe = meta_b_oe[base_qid]["doc"]["question"]
 
-    if (int(meta_b_prediction == answer_b) + int(meta_c_prediction == answer_c) + int(meta_d_prediction == answer_d)) >= 3 and meta_a_prediction != answer_a:
+    if (int(meta_b_prediction == answer_b) + int(meta_c_prediction == answer_c)) >= 2 and meta_a_prediction != answer_a:
         refine_qid.append(qid)
 
         try:
@@ -111,9 +115,9 @@ for qid in jsonl_a:
             f'Youtube URL: {meta_b["doc"].get("youtube_url", "N/A")}',
             f'Answer: {answer_b}',
             f'GPT-4o: {meta_a_prediction}',
-            f'LLaVA: {meta_b_prediction}',
-            f'Qwen: {meta_c_prediction}',
-            f'LLaVA_72B: {meta_d_prediction}',
+            f'{model_b_name}: {meta_b_prediction}',
+            f'{model_c_name}: {meta_c_prediction}',
+            f'{model_d_name}: {meta_d_prediction}',
             '*'*100,
             # f'OE Question: {question_oe}',
             # f'LLaVA OE: {meta_b_prediction_oe}',

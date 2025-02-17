@@ -209,3 +209,40 @@ def hardvideo_aggregate_results(results):
         total_answered += v["answered"]
     eval_logger.info(f"Overall Performance: {100 * total_correct / total_answered if total_answered > 0 else 0 : .1f}%")
     return 100 * total_correct / total_answered if total_answered > 0 else 0
+
+
+
+def hardvideo_aggregate_oe_results(results):
+    """
+    Args:
+        results: a list of values returned by process_results
+    Returns:
+        A score
+    """
+    category2score = {}
+
+    for category in CATEGORIES:
+        category2score[category] = {"correct": 0, "answered": 0}
+
+
+    for result in results:
+        capability = result["capability"]
+        category2score[capability]["answered"] += 1
+        category2score[capability]["correct"] += int(result["correctness"] >= 3)
+
+    for category in CATEGORIES:
+        total_correct = 0
+        total_answered = 0
+        for k, v in category2score.items():
+            if category in k:
+                total_correct += v["correct"]
+                total_answered += v["answered"]
+        eval_logger.info(f"Evaluation on capability: {category}: {100 * total_correct / total_answered if total_answered > 0 else 0 : .1f}%")
+
+    total_correct = 0
+    total_answered = 0
+    for k, v in category2score.items():
+        total_correct += v["correct"]
+        total_answered += v["answered"]
+    eval_logger.info(f"Overall Performance: {100 * total_correct / total_answered if total_answered > 0 else 0 : .1f}%")
+    return 100 * total_correct / total_answered if total_answered > 0 else 0
