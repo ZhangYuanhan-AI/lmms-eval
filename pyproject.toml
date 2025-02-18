@@ -72,6 +72,7 @@ dependencies = [
     "zss",
     "protobuf==3.20",
     "sentence_transformers",
+    "bytedservicediscovery",
 ]
 
 [project.optional-dependencies]
