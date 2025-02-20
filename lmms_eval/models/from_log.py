@@ -56,12 +56,16 @@ class FromLog(lmms):
                                 log_data = json.load(f)
 
                             # check if model is matched
-                            _model_args = log_data["args"]
-                            if not matched_model(_model_args):
+                            # import pdb;pdb.set_trace()
+
+                            _model_args = log_data.get("args", {})
+                            if _model_args and not matched_model(_model_args):
                                 raise Exception("Model not matched")
+
 
                             # load logs
                             logs = {}
+                            # import pdb;pdb.set_trace()
                             for data in log_data["logs"]:
                                 id = data["doc_id"]
                                 response = data["resps"][0]
@@ -104,6 +108,7 @@ class FromLog(lmms):
         pbar = tqdm(total=len(requests), disable=(self.rank != 0), desc="Model Responding")
 
         for contexts, gen_kwargs, doc_to_visual, doc_id, task, split in [reg.args for reg in requests]:
+            # import pdb;pdb.set_trace()
             response = self.logs[task]["logs"][doc_id]
             res.append(response[0])
             pbar.update(1)
