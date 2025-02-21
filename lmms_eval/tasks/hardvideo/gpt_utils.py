@@ -19,9 +19,11 @@ from loguru import logger as eval_logger
 
 NUM_SECONDS_TO_SLEEP = 8
 
-GPT_EVAL_MODEL_NAME = os.getenv("GPT_EVAL_MODEL_NAME", "Qwen2.5-7B-Instruct")
+GPT_EVAL_MODEL_NAME = os.getenv("GPT_EVAL_MODEL_NAME", "Qwen2.5-72B-Instruct")
 
 API_TYPE = os.getenv("API_TYPE", "openai")
+
+NEXSTONE_HTTP_CHAT_URL = "https://maas.byteintl.net/service/api/v1/chat/completions"
 
 import ipaddress
 def ip_port_to_url(ip, port):
@@ -34,12 +36,8 @@ def ip_port_to_url(ip, port):
 
 if API_TYPE == "openai":
     if 'qwen' in GPT_EVAL_MODEL_NAME.lower():
-        from lmms_eval.models.model_utils.sd_util import SDClient
-        psm = "tiktok.aiic.ray_" + os.getenv("RAY_ENV", "experience")
-        ip, port = SDClient(psm, refresh=False).get_one()
-        url = ip_port_to_url(ip, port)
-        route_prefix = GPT_EVAL_MODEL_NAME.replace("Qwen/", "")
-        API_URL = f'{url}/{route_prefix}/v1/chat/completions'
+        GPT_EVAL_MODEL_NAME = GPT_EVAL_MODEL_NAME.replace("Qwen/", "")
+        API_URL = NEXSTONE_HTTP_CHAT_URL
     else:
         API_URL = os.getenv("OPENAI_API_URL", "https://api.openai.com/v1/chat/completions")
 
@@ -155,7 +153,6 @@ def gpt_score_proccess(doc, result):
         review = "Failed to Get a Proper Review."
         model_name = "Failed Request"
         scores = ["no", 0]
-
     # data_dict = {"video_id": doc["video_id"], "capability": capability, "pred_answer": pred_ans, "answer": doc["answer"]}
 
     data_dict = {"video_id": doc["video_id"], "capability": doc["capability"], "scores": scores, "correctness": scores[1] ,"answer": answer}
@@ -203,8 +200,6 @@ def aggregate_score(results, args):
     yes_count = 0
     no_count = 0
     total_score = 0
-
-    import pdb; pdb.set_trace()
 
     # Iterate over the results to count correctness and sum scores
     for result_dict in results:

@@ -85,6 +85,23 @@ def hardvideo_doc_to_visual(doc):
         sys.exit(f"video path:{video_path} does not exist, please check")
     return [video_path]
 
+def hardvideo_doc_to_visual_tos(doc):
+    cache_dir = os.path.join(base_cache_dir, cache_name)
+    # import pdb;pdb.set_trace()
+    video_path = doc["video_id"] + ".mp4"
+    video_path = os.path.join("https://tosv.byted.org/obj/tiktok-maas-us/robustness-benchmark/", video_path)
+    # if os.path.exists(video_path):
+    #     video_path = video_path
+    # elif os.path.exists(video_path.replace("mp4", "MP4")):
+    #     video_path = video_path.replace("mp4", "MP4")
+    # elif os.path.exists(video_path.replace("mp4", "mkv")):
+    #     video_path = video_path.replace("mp4", "mkv")
+    # else:
+    #     sys.exit(f"video path:{video_path} does not exist, please check")
+    return [video_path]
+
+
+
 
 def hardvideo_doc_to_text(doc, lmms_eval_specific_kwargs=None):
     question = doc["question"] +'\n'+ doc["question_prompt"]
