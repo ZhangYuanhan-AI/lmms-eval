@@ -66,7 +66,7 @@ with open("/opt/tiger/lmms-eval/deleted_qid_llava_7b_qwen2_5_7b_llava_72b_intern
 
 deleted_qid = [_.split("-")[0] for _ in deleted_qid]
 
-with open("/opt/tiger/yx/hardvideo_all_mc_gt.json", "r") as f:
+with open("/opt/tiger/lmms-eval/logs/yx/hardvideo_all_mc_gt.json", "r") as f:
     mc_gt = json.load(f)
 
 
