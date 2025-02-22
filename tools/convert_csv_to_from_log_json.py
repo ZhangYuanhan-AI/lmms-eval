@@ -11,7 +11,7 @@ FROM_LOG_TASK_TEMPLATE_JSON = {
 }
 
 
-csv_file_path = "/opt/tiger/02_20_from_yx.csv"
+csv_file_path = "/opt/tiger/02_21.csv"
 eval_set = "hardvideo_all" #csv_file_path.split("/")[-1].split(".")[0]
 
 # 读取 CSV 文件
@@ -27,6 +27,7 @@ save_question_type = "all"
 task_json = copy.deepcopy(FROM_LOG_TASK_TEMPLATE_JSON)
 task_json["model_configs"]["task"] = eval_set
 assert 'pred' in df.columns, "pred column not found in eval set"
+mc_results = {}
 for index, row in df.iterrows():
     # 检查是否存在'doc_id'列
     if save_question_type != "all":
@@ -44,9 +45,17 @@ for index, row in df.iterrows():
             ]
         ],
     })
+    # import pdb;pdb.set_trace()
+    if row["question_type"] == "Multiple-choice Question with a Single Correct Answer":
+        mc_results[doc_id] = row['answer']
 task_json_path = os.path.join("/opt/tiger/yx", f"{eval_set}.json")
+mc_gt_json_path = os.path.join("/opt/tiger/yx", f"{eval_set}_mc_gt.json")
 with open(task_json_path, 'w') as f:
     f.write(json.dumps(task_json, indent=4))
+
+with open(mc_gt_json_path, 'w') as f:
+    f.write(json.dumps(mc_results, indent=4))
+
 
 
 

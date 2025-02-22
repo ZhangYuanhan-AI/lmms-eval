@@ -1,0 +1,81 @@
+Model Name: human
+1044 Evaluation on capability: Non-leading Open-ended Question:  84.3%
+1044 Evaluation on capability: Paraphrased Open-ended Question:  83.9%
+1044 Evaluation on capability: Correctly-led Open-ended Question:  83.9%
+1044 Evaluation on capability: Wrongly-led Open-ended Question:  76.2%
+1044 Evaluation on capability: Multiple-choice Question with a Single Correct Answer:  87.5%
+5220 Overall Performance:  83.2%
+Robustness Performance: 64.4%
+****************************************************************************************************
+Model Name: OpenGVLab__InternVL2_5-38B
+1044 Evaluation on capability: Non-leading Open-ended Question:  24.8%
+1044 Evaluation on capability: Paraphrased Open-ended Question:  27.8%
+1044 Evaluation on capability: Correctly-led Open-ended Question:  52.9%
+1044 Evaluation on capability: Wrongly-led Open-ended Question:  22.7%
+1044 Evaluation on capability: Multiple-choice Question with a Single Correct Answer:  47.7%
+5220 Overall Performance:  35.2%
+Robustness Performance: 13.5%
+****************************************************************************************************
+Model Name: gpt-4o-2024-05-13
+1044 Evaluation on capability: Non-leading Open-ended Question:  31.9%
+1044 Evaluation on capability: Paraphrased Open-ended Question:  35.0%
+1044 Evaluation on capability: Correctly-led Open-ended Question:  63.7%
+1044 Evaluation on capability: Wrongly-led Open-ended Question:  38.4%
+1044 Evaluation on capability: Multiple-choice Question with a Single Correct Answer:  46.3%
+5220 Overall Performance:  43.0%
+Robustness Performance: 23.0%
+****************************************************************************************************
+Model Name: gpt-4o-2024-05-13
+1044 Evaluation on capability: Non-leading Open-ended Question:  8.4%
+1044 Evaluation on capability: Paraphrased Open-ended Question:  9.4%
+1044 Evaluation on capability: Correctly-led Open-ended Question:  59.5%
+1044 Evaluation on capability: Wrongly-led Open-ended Question:  14.6%
+1044 Evaluation on capability: Multiple-choice Question with a Single Correct Answer:  15.7%
+5220 Overall Performance:  21.5%
+Robustness Performance: 3.8%
+****************************************************************************************************
+Model Name: checkpoints__LLaVA-Video-72B-Qwen2
+1044 Evaluation on capability: Non-leading Open-ended Question:  24.3%
+1044 Evaluation on capability: Paraphrased Open-ended Question:  25.3%
+1044 Evaluation on capability: Correctly-led Open-ended Question:  57.9%
+1044 Evaluation on capability: Wrongly-led Open-ended Question:  32.5%
+1044 Evaluation on capability: Multiple-choice Question with a Single Correct Answer:  47.6%
+5220 Overall Performance:  37.5%
+Robustness Performance: 15.3%
+****************************************************************************************************
+Model Name: Qwen2-VL-72B-Instruct
+1044 Evaluation on capability: Non-leading Open-ended Question:  18.0%
+1044 Evaluation on capability: Paraphrased Open-ended Question:  19.9%
+1044 Evaluation on capability: Correctly-led Open-ended Question:  83.1%
+1044 Evaluation on capability: Wrongly-led Open-ended Question:  19.8%
+1044 Evaluation on capability: Multiple-choice Question with a Single Correct Answer:  45.1%
+5220 Overall Performance:  37.2%
+Robustness Performance: 11.5%
+****************************************************************************************************
+Model Name: LLaVA-NeXT-Video-7B-Qwen2__
+1044 Evaluation on capability: Non-leading Open-ended Question:  21.6%
+1044 Evaluation on capability: Paraphrased Open-ended Question:  22.6%
+1044 Evaluation on capability: Correctly-led Open-ended Question:  49.3%
+1044 Evaluation on capability: Wrongly-led Open-ended Question:  37.2%
+1044 Evaluation on capability: Multiple-choice Question with a Single Correct Answer:  42.2%
+5220 Overall Performance:  34.6%
+Robustness Performance: 12.3%
+****************************************************************************************************
+Model Name: Qwen__Qwen2-VL-7B-Instruct
+1044 Evaluation on capability: Non-leading Open-ended Question:  18.0%
+1044 Evaluation on capability: Paraphrased Open-ended Question:  17.5%
+1044 Evaluation on capability: Correctly-led Open-ended Question:  82.8%
+1044 Evaluation on capability: Wrongly-led Open-ended Question:  18.3%
+1044 Evaluation on capability: Multiple-choice Question with a Single Correct Answer:  45.6%
+5220 Overall Performance:  36.4%
+Robustness Performance: 8.7%
+****************************************************************************************************
+Model Name: OpenGVLab__InternVL2_5-8B
+1044 Evaluation on capability: Non-leading Open-ended Question:  21.2%
+1044 Evaluation on capability: Paraphrased Open-ended Question:  23.1%
+1044 Evaluation on capability: Correctly-led Open-ended Question:  65.4%
+1044 Evaluation on capability: Wrongly-led Open-ended Question:  25.2%
+1044 Evaluation on capability: Multiple-choice Question with a Single Correct Answer:  45.0%
+5220 Overall Performance:  36.0%
+Robustness Performance: 12.6%
+****************************************************************************************************
