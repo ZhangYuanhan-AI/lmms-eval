@@ -41,7 +41,7 @@ QUESTION_CATEGORIES_MAPPTING = {
 }
 
 
-evaluate_dimension = "ability" # "ability" or "question"
+evaluate_dimension = "question" # "ability" or "question"
 
 # Set up logging
 log_file = f"result_presentation_{evaluate_dimension}.log"
@@ -58,7 +58,7 @@ model_results = []
 log_name = "hardvideo_open_ended_score"
 
 oe_threshold = 3
-robustness_threshold = 4
+robustness_threshold = 5
 
 
 with open("/opt/tiger/lmms-eval/deleted_qid_llava_7b_qwen2_5_7b_llava_72b_internvl_38B_over_2.json", "r") as f:
@@ -121,6 +121,9 @@ def hardvideo_aggregate_results(results,model_name,model_idx):
 
         if evaluate_dimension == "ability" and category != "Multiple-choice Question with a Single Correct Answer":
             continue
+
+        if preffix not in qid2score:
+            qid2score[preffix] = []
             
         category2score[dimension]["answered"] += 1
         if category == "Multiple-choice Question with a Single Correct Answer":
@@ -128,14 +131,14 @@ def hardvideo_aggregate_results(results,model_name,model_idx):
             regrex_answer = extract_characters_regex(result["filtered_resps"][0])
             if model_name == "human":
                 category2score[dimension]["correct"] += int(regrex_answer == mc_gt[str(result["doc_id"])])
+                qid2score[preffix].append(int(regrex_answer == mc_gt[str(result["doc_id"])]))
             else:
                 category2score[dimension]["correct"] += int(regrex_answer == result[log_name]["answer"])
-
+                qid2score[preffix].append(int(regrex_answer == result[log_name]["answer"]))
+            
         else:
             category2score[dimension]["correct"] += int(result[log_name]["correctness"] >=oe_threshold)
-        if preffix not in qid2score:
-            qid2score[preffix] = []
-        qid2score[preffix].append(int(result[log_name]["correctness"] >=oe_threshold))
+            qid2score[preffix].append(int(result[log_name]["correctness"] >=oe_threshold))
 
 
     
@@ -163,11 +166,16 @@ def hardvideo_aggregate_results(results,model_name,model_idx):
         total_answered += v["answered"]
     logging.info(f"{total_answered} Overall Performance: {100 * total_correct / total_answered if total_answered > 0 else 0 : .1f}%")
 
-    for qid, score in qid2score.items():
+    # import pdb;pdb.set_trace()
+    for qid, score in list(qid2score.items()):
         # import pdb;pdb.set_trace()
+        if score[0] == 0:
+            del qid2score[qid]
+            continue
         qid2score[qid] = 1 if sum(score) >= robustness_threshold else 0
 
-    logging.info(f"Robustness Performance: {100 * sum(qid2score.values()) / len(qid2score) :.1f}%")
+    # import pdb;pdb.set_trace()
+    logging.info(f"{len(qid2score)} Robustness Performance: {100 * sum(qid2score.values()) / len(qid2score) :.1f}%")
     # return 100 * sum(qid2score.values()) / len(qid2score) if len(qid2score) > 0 else 0
     logging.info('*'*100)
 
