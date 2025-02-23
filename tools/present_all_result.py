@@ -133,6 +133,8 @@ def hardvideo_aggregate_results(results,model_name,model_idx):
                 category2score[dimension]["correct"] += int(regrex_answer == mc_gt[str(result["doc_id"])])
                 qid2score[preffix].append(int(regrex_answer == mc_gt[str(result["doc_id"])]))
             else:
+                # if model_name == "gemini-1.5-pro-preview":
+                #     import pdb;pdb.set_trace()
                 category2score[dimension]["correct"] += int(regrex_answer == result[log_name]["answer"])
                 qid2score[preffix].append(int(regrex_answer == result[log_name]["answer"]))
             
@@ -201,10 +203,12 @@ jsonl_j_path = "/opt/tiger/lmms-eval/logs/Qwen2-VL-72B-Instruct/20250221_232424_
 jsonl_k_path = "/opt/tiger/lmms-eval/logs/LLaVA-NeXT-Video-7B-Qwen2__/20250222_084414_samples_hardvideo_all.jsonl"
 jsonl_l_path = "/opt/tiger/lmms-eval/logs/Qwen__Qwen2-VL-7B-Instruct/20250222_094002_samples_hardvideo_all.jsonl"
 jsonl_m_path = "/opt/tiger/lmms-eval/logs/OpenGVLab__InternVL2_5-8B/20250222_092932_samples_hardvideo_all.jsonl"
+jsonl_n_path = "/opt/tiger/lmms-eval/logs/gemini-1.5-pro-preview/20250222_220444_samples_hardvideo_all.jsonl"
+jsonl_o_path = "/opt/tiger/lmms-eval/logs/gemini-1.5-pro-preview/20250223_003823_samples_hardvideo_all.jsonl"
 
 
 
-for idx,_ in enumerate([jsonl_b_path, jsonl_c_path, jsonl_d_path,jsonl_e_path,jsonl_f_path,jsonl_j_path,jsonl_k_path,jsonl_l_path,jsonl_m_path]):
+for idx,_ in enumerate([jsonl_b_path, jsonl_c_path, jsonl_d_path,jsonl_e_path,jsonl_f_path,jsonl_j_path,jsonl_k_path,jsonl_l_path,jsonl_m_path,jsonl_n_path,jsonl_o_path]):
     # Load JSONL files
     results = load_jsonl(_)
     # Process results
