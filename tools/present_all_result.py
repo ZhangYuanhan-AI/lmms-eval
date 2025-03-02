@@ -41,7 +41,7 @@ QUESTION_CATEGORIES_MAPPTING = {
 }
 
 
-evaluate_dimension = "question" # "ability" or "question"
+evaluate_dimension = "ability" # "ability" or "question"
 
 # Set up logging
 log_file = f"result_presentation_{evaluate_dimension}.log"
@@ -55,6 +55,8 @@ CATEGORIES = ABILITY_CATEGORIES if evaluate_dimension == "ability" else QUESTION
 
 model_results = []
 
+robustness_results = []
+
 log_name = "hardvideo_open_ended_score"
 
 oe_threshold = 3
@@ -64,12 +66,16 @@ robustness_threshold = 5
 with open("/opt/tiger/lmms-eval/deleted_qid_llava_7b_qwen2_5_7b_llava_72b_internvl_38B_over_2.json", "r") as f:
     deleted_qid = json.load(f)
 
-deleted_qid = [_.split("-")[0] for _ in deleted_qid]
+deleted_qid = set([_.split("-")[0] for _ in deleted_qid])
 
 with open("/opt/tiger/lmms-eval/logs/yx/hardvideo_all_mc_gt.json", "r") as f:
     mc_gt = json.load(f)
 
 
+with open("/opt/tiger/lmms-eval/Video-TT_300x5_id.json", "r") as f:
+    challange_id = json.load(f)
+
+challange_id = set([_.split("-")[0] for _ in challange_id])
 
 def extract_characters_regex(s):
     s = s.strip()
@@ -101,7 +107,9 @@ def hardvideo_aggregate_results(results,model_name,model_idx):
     """
     category2score = {}
     qid2score = {}
+    qid2capability = {}
     cur_model_results = []
+    cur_model_robustness_results = []
 
     for category in CATEGORIES:
         category2score[category] = {"correct": 0, "answered": 0}
@@ -112,18 +120,21 @@ def hardvideo_aggregate_results(results,model_name,model_idx):
         qid = result["doc"]["qid"]
         suffix = qid.split("-")[-1]
         preffix = qid.split("-")[0]
-        if preffix in deleted_qid:
+
+        if preffix in challange_id:
             continue
 
         capability = result[log_name]["capability"]
         category = QUESTION_CATEGORIES_MAPPTING[suffix]
         dimension = result[log_name]["capability"] if evaluate_dimension == "ability" else QUESTION_CATEGORIES_MAPPTING[suffix]
-
-        if evaluate_dimension == "ability" and category != "Multiple-choice Question with a Single Correct Answer":
-            continue
+        
+        # import pdb;pdb.set_trace()
+        # if evaluate_dimension == "ability" and category != "Multiple-choice Question with a Single Correct Answer":
+        #     continue
 
         if preffix not in qid2score:
             qid2score[preffix] = []
+            qid2capability[preffix] = capability
             
         category2score[dimension]["answered"] += 1
         if category == "Multiple-choice Question with a Single Correct Answer":
@@ -170,7 +181,6 @@ def hardvideo_aggregate_results(results,model_name,model_idx):
 
     # import pdb;pdb.set_trace()
     for qid, score in list(qid2score.items()):
-        # import pdb;pdb.set_trace()
         if score[0] == 0:
             del qid2score[qid]
             continue
@@ -179,14 +189,35 @@ def hardvideo_aggregate_results(results,model_name,model_idx):
     # import pdb;pdb.set_trace()
     logging.info(f"{len(qid2score)} Robustness Performance: {100 * sum(qid2score.values()) / len(qid2score) :.1f}%")
     # return 100 * sum(qid2score.values()) / len(qid2score) if len(qid2score) > 0 else 0
-    logging.info('*'*100)
 
+
+
+    for idx, category in enumerate(ABILITY_CATEGORIES):
+        total_correct = 0
+        total_answered = 0
+        # import pdb;pdb.set_trace()
+        for k, v in qid2score.items():
+            if qid2capability[k] == category:
+                total_correct += qid2score[k]
+                total_answered += 1
+
+        # logging.info(f"{total_answered} Robustness on capability: {capability}: {100 * total_correct / total_answered if total_answered > 0 else 0 : .1f}%")
+
+        cur_model_robustness_results.append(round(100 * total_correct / total_answered if total_answered > 0 else 0,1))
+
+    robustness_results.append(cur_model_robustness_results)
 
 
 
 def load_jsonl(file_path):
-    with open(file_path, "r") as f:
-        return [json.loads(line) for line in f]
+    return_json = []
+    try:
+        with open(file_path, "r") as f:
+            for line in f:
+                return_json.append(json.loads(line))
+    except:
+        import pdb;pdb.set_trace()
+    return return_json
 
 # File paths
 # jsonl_a_path = "/opt/tiger/lmms-eval/logs/gpt-4o-2024-05-13/20250213_081234_samples_hardvideo.jsonl"
@@ -205,10 +236,12 @@ jsonl_l_path = "/opt/tiger/lmms-eval/logs/Qwen__Qwen2-VL-7B-Instruct/20250222_09
 jsonl_m_path = "/opt/tiger/lmms-eval/logs/OpenGVLab__InternVL2_5-8B/20250222_092932_samples_hardvideo_all.jsonl"
 jsonl_n_path = "/opt/tiger/lmms-eval/logs/gemini-1.5-pro-preview/20250222_220444_samples_hardvideo_all.jsonl"
 jsonl_o_path = "/opt/tiger/lmms-eval/logs/gemini-1.5-pro-preview/20250223_003823_samples_hardvideo_all.jsonl"
+jsonl_p_path = "/opt/tiger/lmms-eval/logs/Qwen__Qwen2.5-VL-72B-Instruct/20250227_143633_samples_hardvideo_all.jsonl"
+jsonl_q_path = "/opt/tiger/lmms-eval/logs/Qwen__Qwen2.5-VL-7B-Instruct/20250227_161320_samples_hardvideo_all.jsonl"
 
 
 
-for idx,_ in enumerate([jsonl_b_path, jsonl_c_path, jsonl_d_path,jsonl_e_path,jsonl_f_path,jsonl_j_path,jsonl_k_path,jsonl_l_path,jsonl_m_path,jsonl_n_path,jsonl_o_path]):
+for idx,_ in enumerate([jsonl_b_path, jsonl_c_path, jsonl_d_path,jsonl_e_path,jsonl_f_path,jsonl_j_path,jsonl_k_path,jsonl_l_path,jsonl_m_path,jsonl_n_path,jsonl_o_path,jsonl_p_path,jsonl_q_path]):
     # Load JSONL files
     results = load_jsonl(_)
     # Process results
@@ -216,7 +249,11 @@ for idx,_ in enumerate([jsonl_b_path, jsonl_c_path, jsonl_d_path,jsonl_e_path,js
     logging.info(f"Model Name: {model_name}")
     hardvideo_aggregate_results(results,model_name,idx)
 
-for idx in [3,2,1,4,5,0]:
-    print(model_results[idx])
+for idx in [3,6,2,1,4,11,0]:
+    print(f"{model_results[idx]},")
 
+print("***"*10)
+
+for idx in [3,6,2,1,4,11,0]:
+    print(f"{robustness_results[idx]},")
 

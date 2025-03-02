@@ -473,3 +473,7 @@ class Oryx(lmms):
                 pbar.update(1)
                 continue
         return res
+
+
+    def generate_until_multi_round(self, requests) -> List[str]:
+        raise NotImplementedError("TODO: Implement multi-round generation")
