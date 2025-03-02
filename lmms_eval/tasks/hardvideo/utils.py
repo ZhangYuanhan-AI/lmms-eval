@@ -111,6 +111,20 @@ def hardvideo_doc_to_text(doc, lmms_eval_specific_kwargs=None):
     return full_prompt
 
 
+def hardvideo_doc_to_text_audio(doc, lmms_eval_specific_kwargs=None):
+    subtitles_prompt = "This video's subtitles are listed below: \n"
+    audio_path = os.path.join("/opt/tiger/audio_human", f'{doc["video_id"]}.txt')
+    try:
+        with open(audio_path) as f:
+            subtitle = f.read()
+    except:
+        subtitle = ""
+    question = doc["question"] +'\n'+ doc["question_prompt"]
+    post_prompt = lmms_eval_specific_kwargs["post_prompt"] if "post_prompt" in lmms_eval_specific_kwargs else "The best answer is:"
+    pre_promt = lmms_eval_specific_kwargs["pre_prompt"] if "pre_prompt" in lmms_eval_specific_kwargs else "Select the best answer to the following multiple-choice question based on the video. Respond with only the letter (A, B, C, or D) of the correct option."
+    full_prompt = subtitles_prompt + subtitle + "\n" + pre_promt + "\n" + question + "\n" + post_prompt
+    return full_prompt
+
 # Frames + Subs
 # This video's subtitles are listed below:
 # 【subtitles】
